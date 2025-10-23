@@ -22,7 +22,7 @@
                 <a class="navitem" href="gigs.html">Gigs</a>
                 <a class="navitem" href="student-profile.html">Profile</a>
                 <a class="navitem" href="student-messaging.html">Messages</a>
-                <a class="navitem" href="index.html">Log out</a>
+                <a class="navitem" href="#" onclick="Auth.logout(); return false;">Log out</a>
             </nav>
         </aside>
         <main class="content">
@@ -80,5 +80,66 @@
         </main>
     </div>
     <script src="js/app.js"></script>
+    <script>
+        // Load user data and update dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            const user = Auth.getUser();
+            if (user) {
+                // Update user name in sidebar and welcome message
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Update welcome message
+                const welcomeMessage = document.querySelector('.content h1');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Welcome, ${userName}`;
+                }
+                
+                // Load dashboard data
+                loadDashboardData();
+            }
+        });
+        
+        async function loadDashboardData() {
+            try {
+                const response = await apiFetch('/dashboard');
+                if (response.success) {
+                    updateDashboardStats(response.stats);
+                }
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+                showNotification('Failed to load dashboard data', 'error');
+            }
+        }
+        
+        function updateDashboardStats(stats) {
+            // Update stats in the grid
+            const activeTasks = document.querySelector('.grid-4 .section:nth-child(1) div');
+            const pendingTasks = document.querySelector('.grid-4 .section:nth-child(2) div');
+            const completedTasks = document.querySelector('.grid-4 .section:nth-child(3) div');
+            
+            if (activeTasks) activeTasks.textContent = stats.active_tasks || 0;
+            if (pendingTasks) pendingTasks.textContent = stats.pending_tasks || 0;
+            if (completedTasks) completedTasks.textContent = stats.completed_tasks || 0;
+            
+            // Update total earned
+            const totalEarned = document.querySelector('.grid-4.mt-20 .section:nth-child(1) div');
+            if (totalEarned && stats.total_earned) {
+                totalEarned.textContent = `sh.${stats.total_earned.toLocaleString()}`;
+            }
+        }
+    </script>
 </body>
 </html>

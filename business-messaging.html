@@ -479,6 +479,138 @@
     <script src="js/app.js"></script>
     <script src="messaging.js"></script>
     <script>
+        // Load user data and update sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            const user = Auth.getUser();
+            if (user) {
+                // Update user name in sidebar
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Load conversations
+                loadConversations();
+            }
+        });
+        
+        async function loadConversations() {
+            try {
+                const response = await apiFetch('/conversations');
+                if (response.success) {
+                    updateConversationsList(response.conversations);
+                }
+            } catch (error) {
+                console.error('Failed to load conversations:', error);
+                showNotification('Failed to load conversations', 'error');
+            }
+        }
+        
+        function updateConversationsList(conversations) {
+            const conversationsList = document.getElementById('conversationsList');
+            if (conversationsList && conversations) {
+                conversationsList.innerHTML = conversations.map(conv => `
+                    <div class="conversation-item" onclick="selectConversation(${conv.id})">
+                        <div class="conversation-avatar">${conv.other_user_name.charAt(0).toUpperCase()}</div>
+                        <div class="conversation-content">
+                            <div class="conversation-name">${conv.other_user_name}</div>
+                            <div class="conversation-preview">${conv.last_message || 'No messages yet'}</div>
+                        </div>
+                        <div class="conversation-meta">
+                            <div class="conversation-time">${new Date(conv.last_message_time).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function selectConversation(conversationId) {
+            // Load messages for this conversation
+            loadMessages(conversationId);
+        }
+        
+        async function loadMessages(conversationId) {
+            try {
+                const response = await apiFetch(`/messages/${conversationId}`);
+                if (response.success) {
+                    updateMessagesList(response.messages);
+                    showChatArea();
+                }
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+                showNotification('Failed to load messages', 'error');
+            }
+        }
+        
+        function updateMessagesList(messages) {
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages && messages) {
+                chatMessages.innerHTML = messages.map(msg => `
+                    <div class="message ${msg.sender_id === getCurrentUserId() ? 'own' : ''}">
+                        <div class="message-avatar">${msg.sender_name.charAt(0).toUpperCase()}</div>
+                        <div class="message-content">
+                            <div class="message-text">${msg.content}</div>
+                            <div class="message-time">${new Date(msg.created_at).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function showChatArea() {
+            document.getElementById('chatHeader').style.display = 'flex';
+            document.getElementById('chatInputArea').style.display = 'block';
+        }
+        
+        function getCurrentUserId() {
+            const user = Auth.getUser();
+            return user ? user.id : null;
+        }
+        
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                // Send message via API
+                apiFetch('/messages', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        conversation_id: getCurrentConversationId(),
+                        message: message
+                    })
+                })
+                .then(response => {
+                    if (response.success) {
+                        messageInput.value = '';
+                        // Reload messages
+                        loadMessages(getCurrentConversationId());
+                    } else {
+                        showNotification('Failed to send message', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Send message error:', error);
+                    showNotification('Failed to send message', 'error');
+                });
+            }
+        }
+        
+        function getCurrentConversationId() {
+            // This would be set when a conversation is selected
+            return window.currentConversationId || null;
+        }
+        
         // Business-specific functions
         function viewStudentProfile() {
             if (messagingSystem.currentConversationId) {

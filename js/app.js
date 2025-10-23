@@ -2,7 +2,7 @@
 // Shared utilities, API calls, localStorage management
 
 // API Configuration
-const API_BASE_URL = '/php/api.php';
+const API_BASE_URL = '/funagig/php/api.php';
 
 // Utility Functions
 function showNotification(message, type = 'info') {
@@ -186,7 +186,18 @@ const Auth = {
     
     logout() {
         try {
+            // Call server logout
+            apiFetch('/logout', {
+                method: 'POST'
+            }).catch(error => {
+                console.error('Server logout error:', error);
+                // Continue with client logout even if server call fails
+            });
+            
+            // Clear local storage
             Storage.remove('user');
+            Storage.remove('userType');
+            Storage.remove('isLoggedIn');
             Storage.clear(); // Clear all stored data
             window.location.href = 'index.html';
         } catch (error) {

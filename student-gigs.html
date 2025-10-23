@@ -88,6 +88,98 @@
         </main>
     </div>
     <script>
+        // Load user data and update sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            const user = Auth.getUser();
+            if (user) {
+                // Update user name in sidebar
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Load gigs data
+                loadGigs();
+            }
+        });
+        
+        async function loadGigs() {
+            try {
+                const response = await apiFetch('/gigs');
+                if (response.success) {
+                    updateGigsList(response.gigs);
+                }
+            } catch (error) {
+                console.error('Failed to load gigs:', error);
+                showNotification('Failed to load gigs', 'error');
+            }
+        }
+        
+        function updateGigsList(gigs) {
+            const gigsContainer = document.querySelector('.card-grid');
+            if (gigsContainer && gigs) {
+                gigsContainer.innerHTML = gigs.map(gig => `
+                    <article class="section" style="display:grid; grid-template-columns:160px 1fr auto; gap:16px;">
+                        <div style="height:120px; background:#dbeafe; border-radius:12px;"></div>
+                        <div>
+                            <h3>${gig.title}</h3>
+                            <p class="subtle">${gig.description.substring(0, 100)}...</p>
+                            <span class="pill blue">${gig.skills || 'General'}</span>
+                            <div class="subtle mt-5">Budget: sh.${gig.budget.toLocaleString()}</div>
+                        </div>
+                        <div style="display:grid; gap:10px;">
+                            <button class="btn secondary" onclick="saveGig(${gig.id})">Save</button>
+                            <button class="btn" onclick="applyToGig(${gig.id})">Apply</button>
+                            <button class="btn secondary" onclick="showInterest(${gig.id})">Interest</button>
+                        </div>
+                    </article>
+                `).join('');
+            }
+        }
+        
+        function saveGig(gigId) {
+            // Implement save gig functionality
+            showNotification('Gig saved!', 'success');
+        }
+        
+        function applyToGig(gigId) {
+            const message = prompt('Add a message to your application:');
+            if (message !== null) {
+                apiFetch('/applications', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        gig_id: gigId,
+                        message: message
+                    })
+                })
+                .then(response => {
+                    if (response.success) {
+                        showNotification('Application submitted successfully!', 'success');
+                    } else {
+                        showNotification('Failed to submit application', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Application error:', error);
+                    showNotification('Failed to submit application', 'error');
+                });
+            }
+        }
+        
+        function showInterest(gigId) {
+            showNotification('Interest noted!', 'info');
+        }
+        
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.getElementById(tabId).style.display = 'block';

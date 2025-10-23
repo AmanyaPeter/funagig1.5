@@ -26,7 +26,7 @@
                 <a class="navitem" href="applicants.html">Applicants</a>
                 <a class="navitem" href="business-analytics.html">Analytics</a>
                 <a class="navitem" href="business-profile.html">Profile</a>
-                <a class="navitem" href="index.html">Log out</a>
+                <a class="navitem" href="#" onclick="Auth.logout(); return false;">Log out</a>
             </nav>
         </aside>
         <main class="content">
@@ -246,6 +246,40 @@
     </div>
 
     <script>
+        // Load user data and update sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            const user = Auth.getUser();
+            if (user) {
+                // Update user name in sidebar
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Pre-fill company name
+                const companyNameField = document.getElementById('companyName');
+                if (companyNameField && !companyNameField.value) {
+                    companyNameField.value = user.name;
+                }
+                
+                // Pre-fill contact email
+                const contactEmailField = document.getElementById('contactEmail');
+                if (contactEmailField && !contactEmailField.value) {
+                    contactEmailField.value = user.email;
+                }
+            }
+        });
+        
         // Form validation and submission
         document.getElementById('post-gig-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -371,7 +405,7 @@
                 submitBtn.disabled = true;
                 
                 // Submit to API
-                apiFetch('/php/api.php/gigs', {
+                apiFetch('/gigs', {
                     method: 'POST',
                     body: JSON.stringify(formData)
                 })

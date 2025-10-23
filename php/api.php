@@ -4,13 +4,12 @@
 
 require_once 'config.php';
 
-// Start session for authentication
-session_start();
+// Session is started in config.php
 
 // Get request method and path
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path = str_replace('/php/api.php', '', $path);
+$path = str_replace('/funagig/php/api.php', '', $path);
 
 // Route the request
 switch ($path) {

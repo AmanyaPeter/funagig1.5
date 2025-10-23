@@ -88,5 +88,148 @@
         </main>
     </div>
     <script src="js/app.js"></script>
+    <script>
+        // Load user data and update profile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            const user = Auth.getUser();
+            if (user) {
+                // Update user name in sidebar
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Update profile form with user data
+                updateProfileForm(user);
+                
+                // Load applications and completed gigs
+                loadApplications();
+                loadCompletedGigs();
+            }
+        });
+        
+        function updateProfileForm(user) {
+            // Update form fields with user data
+            const nameField = document.querySelector('input[name="name"]');
+            const emailField = document.querySelector('input[name="email"]');
+            const universityField = document.querySelector('input[name="university"]');
+            const majorField = document.querySelector('input[name="major"]');
+            
+            if (nameField) nameField.value = user.name || '';
+            if (emailField) emailField.value = user.email || '';
+            if (universityField) universityField.value = user.university || '';
+            if (majorField) majorField.value = user.major || '';
+            
+            // Update avatar initials
+            const avatar = document.querySelector('.cover-img');
+            if (avatar) {
+                avatar.textContent = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U';
+            }
+        }
+        
+        async function loadApplications() {
+            try {
+                const response = await apiFetch('/applications');
+                if (response.success) {
+                    updateApplicationsTable(response.applications);
+                }
+            } catch (error) {
+                console.error('Failed to load applications:', error);
+                showNotification('Failed to load applications', 'error');
+            }
+        }
+        
+        function updateApplicationsTable(applications) {
+            const tbody = document.querySelector('#applications tbody');
+            if (tbody && applications) {
+                tbody.innerHTML = applications.map(app => `
+                    <tr>
+                        <td>${app.gig_title || 'N/A'}</td>
+                        <td><span class="pill ${getStatusClass(app.status)}">${app.status}</span></td>
+                        <td>${new Date(app.applied_at).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        async function loadCompletedGigs() {
+            try {
+                const response = await apiFetch('/applications?status=completed');
+                if (response.success) {
+                    updateCompletedGigsTable(response.applications);
+                }
+            } catch (error) {
+                console.error('Failed to load completed gigs:', error);
+            }
+        }
+        
+        function updateCompletedGigsTable(completedGigs) {
+            const tbody = document.querySelector('.section:last-child tbody');
+            if (tbody && completedGigs) {
+                tbody.innerHTML = completedGigs.map(gig => `
+                    <tr>
+                        <td>${gig.gig_title || 'N/A'}</td>
+                        <td>${gig.business_name || 'N/A'}</td>
+                        <td>sh.${gig.budget || 0}</td>
+                        <td>${new Date(gig.completed_at).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        function getStatusClass(status) {
+            switch(status) {
+                case 'accepted': return 'green';
+                case 'pending': return 'yellow';
+                case 'rejected': return 'red';
+                case 'completed': return 'blue';
+                default: return 'gray';
+            }
+        }
+        
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.querySelector('input[name="name"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                phone: document.querySelector('input[name="phone"]').value,
+                university: document.querySelector('input[name="university"]').value,
+                major: document.querySelector('input[name="major"]').value
+            };
+            
+            // Update profile via API
+            apiFetch('/profile', {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.success) {
+                    showNotification('Profile updated successfully!', 'success');
+                    // Update stored user data
+                    const user = Auth.getUser();
+                    Object.assign(user, formData);
+                    Auth.setUser(user);
+                } else {
+                    showNotification('Failed to update profile', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Profile update error:', error);
+                showNotification('Failed to update profile', 'error');
+            });
+        });
+    </script>
 </body>
 </html>

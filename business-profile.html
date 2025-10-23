@@ -25,7 +25,7 @@
                 <a class="navitem" href="posted-gigs.html">My Gigs</a>
                 <a class="navitem" href="applicants.html">Applicants</a>
                 <a class="navitem active" href="business-profile.html">Profile</a>
-                <a class="navitem" href="index.html">Log out</a>
+                <a class="navitem" href="#" onclick="Auth.logout(); return false;">Log out</a>
             </nav>
         </aside>
         <main class="content">
@@ -329,6 +329,126 @@
     </div>
 
     <script src="js/app.js"></script>
+    <script>
+        // Load user data and update profile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            const user = Auth.getUser();
+            if (user) {
+                // Update user name in sidebar
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Update profile information
+                updateProfileInfo(user);
+                
+                // Load business stats
+                loadBusinessStats();
+            }
+        });
+        
+        function updateProfileInfo(user) {
+            // Update company name
+            const companyName = document.querySelector('h2');
+            if (companyName) {
+                companyName.textContent = user.name;
+            }
+            
+            // Update industry
+            const industryElement = document.querySelector('.info-item span:contains("Industry")');
+            if (industryElement && user.industry) {
+                const industrySpan = industryElement.parentElement.querySelector('span:last-child');
+                if (industrySpan) {
+                    industrySpan.textContent = user.industry;
+                }
+            }
+            
+            // Update email
+            const emailElement = document.querySelector('.info-item span:contains("Email")');
+            if (emailElement) {
+                const emailSpan = emailElement.parentElement.querySelector('span:last-child');
+                if (emailSpan) {
+                    emailSpan.textContent = user.email;
+                }
+            }
+        }
+        
+        async function loadBusinessStats() {
+            try {
+                const response = await apiFetch('/dashboard');
+                if (response.success) {
+                    updateBusinessStats(response.stats);
+                }
+            } catch (error) {
+                console.error('Failed to load business stats:', error);
+                showNotification('Failed to load business statistics', 'error');
+            }
+        }
+        
+        function updateBusinessStats(stats) {
+            // Update stats in the grid
+            const activeGigs = document.querySelector('.grid-4 .section:nth-child(1) div');
+            const totalApplicants = document.querySelector('.grid-4 .section:nth-child(2) div');
+            const hiredStudents = document.querySelector('.grid-4 .section:nth-child(3) div');
+            
+            if (activeGigs) activeGigs.textContent = stats.active_gigs || 0;
+            if (totalApplicants) totalApplicants.textContent = stats.total_applicants || 0;
+            if (hiredStudents) hiredStudents.textContent = stats.hired_students || 0;
+        }
+        
+        // Edit profile functionality
+        function editProfile() {
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        // Handle edit profile form submission
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('editCompanyName').value,
+                industry: document.getElementById('editIndustry').value,
+                location: document.getElementById('editLocation').value,
+                website: document.getElementById('editWebsite').value,
+                bio: document.getElementById('editDescription').value
+            };
+            
+            // Update profile via API
+            apiFetch('/profile', {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.success) {
+                    showNotification('Profile updated successfully!', 'success');
+                    closeEditModal();
+                    // Reload page to show updated data
+                    location.reload();
+                } else {
+                    showNotification('Failed to update profile', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Profile update error:', error);
+                showNotification('Failed to update profile', 'error');
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -96,14 +96,17 @@
                 };
                 
                 // Use apiFetch from app.js (assumed to exist)
-                apiFetch('/funagig/php/api.php/login', {
+                apiFetch('/login', {
                     method: 'POST',
                     body: JSON.stringify(loginData)
                 })
                 .then(response => {
                     // Backend returns user type and status
                     if (response.success) {
-                        localStorage.setItem('loginData', JSON.stringify(loginData));
+                        // Store user data properly
+                        localStorage.setItem('user', JSON.stringify(response.user));
+                        localStorage.setItem('userType', response.userType);
+                        localStorage.setItem('isLoggedIn', 'true');
                         alert('Login successful! Redirecting...');
                         window.location.href = response.userType === 'student' ? 'student-dashboard.html' : 'business-profile.html';
                     } else {
