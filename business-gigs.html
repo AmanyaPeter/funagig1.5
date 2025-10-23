@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Post a New Gig - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">TS</div> Tech Solutions Inc.
+            </div>
+            <nav class="navlist">
+                <a class="navitem" href="business-dashboard.html">Dashboard</a>
+                <a class="navitem active" href="post-gig.html">Post Gig</a>
+                <a class="navitem" href="posted-gigs.html">My Gigs</a>
+                <a class="navitem" href="applicants.html">Applicants</a>
+                <a class="navitem" href="business-analytics.html">Analytics</a>
+                <a class="navitem" href="business-profile.html">Profile</a>
+                <a class="navitem" href="index.html">Log out</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="section">
+                <div class="flex items-center justify-between mb-20">
+                    <div>
+                        <h1 class="h1" style="font-size:28px; margin:0;">Post a New Gig</h1>
+                        <p class="subtle">Create an engaging gig post to attract the best student talent</p>
+                    </div>
+                    <div class="flex gap-10">
+                        <a href="posted-gigs.html" class="btn secondary">View My Gigs</a>
+                        <a href="business-dashboard.html" class="btn ghost">Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <form id="post-gig-form" class="card-lg">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h2>Basic Information</h2>
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="gigTitle" class="label">Gig Title *</label>
+                                <input type="text" id="gigTitle" class="input" placeholder="e.g., Software Engineer Intern" required>
+                                <div class="error-message" id="gigTitleError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="gigDescription" class="label">Description *</label>
+                                <textarea id="gigDescription" class="textarea" rows="4" placeholder="Describe the role, responsibilities, and what students will learn..." required></textarea>
+                                <div class="error-message" id="gigDescriptionError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="gigType" class="label">Type *</label>
+                                <select id="gigType" class="select" required>
+                                    <option value="">Select type</option>
+                                    <option value="full_time">Full-time</option>
+                                    <option value="part_time">Part-time</option>
+                                    <option value="contract">Contract</option>
+                                    <option value="internship">Internship</option>
+                                </select>
+                                <div class="error-message" id="gigTypeError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="gigCategory" class="label">Category *</label>
+                                <select id="gigCategory" class="select" required>
+                                    <option value="">Select category</option>
+                                    <option value="web_development">Web Development</option>
+                                    <option value="mobile_development">Mobile Development</option>
+                                    <option value="data_science">Data Science</option>
+                                    <option value="ui_ux_design">UI/UX Design</option>
+                                    <option value="digital_marketing">Digital Marketing</option>
+                                    <option value="content_writing">Content Writing</option>
+                                    <option value="graphic_design">Graphic Design</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <div class="error-message" id="gigCategoryError"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compensation & Timeline -->
+                    <div class="form-section">
+                        <h2>Compensation & Timeline</h2>
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="compensation" class="label">Compensation (UGX) *</label>
+                                <input type="number" id="compensation" class="input" placeholder="e.g., 500000" min="0" required>
+                                <div class="error-message" id="compensationError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="applicationDeadline" class="label">Application Deadline *</label>
+                                <input type="date" id="applicationDeadline" class="input" required>
+                                <div class="error-message" id="applicationDeadlineError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="projectDuration" class="label">Project Duration *</label>
+                                <select id="projectDuration" class="select" required>
+                                    <option value="">Select duration</option>
+                                    <option value="1_month">1 Month</option>
+                                    <option value="2_months">2 Months</option>
+                                    <option value="3_months">3 Months</option>
+                                    <option value="6_months">6 Months</option>
+                                    <option value="1_year">1 Year</option>
+                                    <option value="ongoing">Ongoing</option>
+                                </select>
+                                <div class="error-message" id="projectDurationError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="hoursPerWeek" class="label">Hours per Week *</label>
+                                <select id="hoursPerWeek" class="select" required>
+                                    <option value="">Select hours</option>
+                                    <option value="10">10 hours</option>
+                                    <option value="20">20 hours</option>
+                                    <option value="30">30 hours</option>
+                                    <option value="40">40 hours</option>
+                                    <option value="flexible">Flexible</option>
+                                </select>
+                                <div class="error-message" id="hoursPerWeekError"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills & Requirements -->
+                    <div class="form-section">
+                        <h2>Skills & Requirements</h2>
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="requiredSkills" class="label">Required Skills *</label>
+                                <textarea id="requiredSkills" class="textarea" rows="3" placeholder="e.g., JavaScript, React, Node.js" required></textarea>
+                                <div class="error-message" id="requiredSkillsError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="preferredSkills" class="label">Preferred Skills</label>
+                                <textarea id="preferredSkills" class="textarea" rows="3" placeholder="e.g., MongoDB, AWS, Docker"></textarea>
+                                <div class="error-message" id="preferredSkillsError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="educationLevel" class="label">Education Level *</label>
+                                <select id="educationLevel" class="select" required>
+                                    <option value="">Select level</option>
+                                    <option value="high_school">High School</option>
+                                    <option value="diploma">Diploma</option>
+                                    <option value="bachelor">Bachelor's Degree</option>
+                                    <option value="master">Master's Degree</option>
+                                    <option value="any">Any</option>
+                                </select>
+                                <div class="error-message" id="educationLevelError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="experienceLevel" class="label">Experience Level *</label>
+                                <select id="experienceLevel" class="select" required>
+                                    <option value="">Select level</option>
+                                    <option value="entry">Entry Level</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                    <option value="any">Any</option>
+                                </select>
+                                <div class="error-message" id="experienceLevelError"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Location & Company Info -->
+                    <div class="form-section">
+                        <h2>Work Location & Company Information</h2>
+                        
+                        <div class="field">
+                            <label for="workLocation" class="label">Work Location *</label>
+                            <select id="workLocation" class="select" required>
+                                <option value="">Select location</option>
+                                <option value="remote">Remote</option>
+                                <option value="on_campus">On Campus</option>
+                                <option value="hybrid">Hybrid</option>
+                            </select>
+                            <div class="error-message" id="workLocationError"></div>
+                        </div>
+
+                        <div class="field" id="specificLocationField" style="display: none;">
+                            <label for="specificLocation" class="label">Specific Location</label>
+                            <input type="text" id="specificLocation" class="input" placeholder="e.g., Makerere University, Kampala">
+                            <div class="error-message" id="specificLocationError"></div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="companyName" class="label">Company Name *</label>
+                                <input type="text" id="companyName" class="input" placeholder="e.g., Tech Solutions Inc." required>
+                                <div class="error-message" id="companyNameError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="contactPerson" class="label">Contact Person *</label>
+                                <input type="text" id="contactPerson" class="input" placeholder="e.g., John Doe" required>
+                                <div class="error-message" id="contactPersonError"></div>
+                            </div>
+
+                            <div class="field">
+                                <label for="contactEmail" class="label">Contact Email *</label>
+                                <input type="email" id="contactEmail" class="input" placeholder="e.g., john@techsolutions.com" required>
+                                <div class="error-message" id="contactEmailError"></div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="additionalNotes" class="label">Additional Notes</label>
+                            <textarea id="additionalNotes" class="textarea" rows="3" placeholder="Any additional information or requirements..."></textarea>
+                            <div class="error-message" id="additionalNotesError"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="termsAccepted" required>
+                                <span class="checkbox-text">I agree to the terms and conditions *</span>
+                            </label>
+                            <div class="error-message" id="termsAcceptedError"></div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-navigation">
+                        <div class="flex gap-10">
+                            <button type="button" class="btn ghost" id="saveDraftBtn">Save as Draft</button>
+                            <button type="submit" class="btn">Post Gig</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Form validation and submission
+        document.getElementById('post-gig-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            clearErrors();
+            
+            const formData = {
+                title: document.getElementById('gigTitle').value.trim(),
+                description: document.getElementById('gigDescription').value.trim(),
+                type: document.getElementById('gigType').value,
+                category: document.getElementById('gigCategory').value,
+                budget: document.getElementById('compensation').value,
+                deadline: document.getElementById('applicationDeadline').value,
+                duration: document.getElementById('projectDuration').value,
+                hoursPerWeek: document.getElementById('hoursPerWeek').value,
+                requiredSkills: document.getElementById('requiredSkills').value.trim(),
+                preferredSkills: document.getElementById('preferredSkills').value.trim(),
+                educationLevel: document.getElementById('educationLevel').value,
+                experienceLevel: document.getElementById('experienceLevel').value,
+                workLocation: document.getElementById('workLocation').value,
+                specificLocation: document.getElementById('specificLocation').value.trim(),
+                companyName: document.getElementById('companyName').value.trim(),
+                contactPerson: document.getElementById('contactPerson').value.trim(),
+                contactEmail: document.getElementById('contactEmail').value.trim(),
+                additionalNotes: document.getElementById('additionalNotes').value.trim(),
+                termsAccepted: document.getElementById('termsAccepted').checked
+            };
+            
+            let isValid = true;
+            
+            // Validate required fields
+            if (!formData.title) {
+                showError('gigTitleError', 'Gig title is required');
+                isValid = false;
+            }
+            
+            if (!formData.description) {
+                showError('gigDescriptionError', 'Description is required');
+                isValid = false;
+            }
+            
+            if (!formData.type) {
+                showError('gigTypeError', 'Please select a gig type');
+                isValid = false;
+            }
+            
+            if (!formData.category) {
+                showError('gigCategoryError', 'Please select a category');
+                isValid = false;
+            }
+            
+            if (!formData.budget || formData.budget <= 0) {
+                showError('compensationError', 'Please enter a valid compensation amount');
+                isValid = false;
+            }
+            
+            if (!formData.deadline) {
+                showError('applicationDeadlineError', 'Application deadline is required');
+                isValid = false;
+            } else if (new Date(formData.deadline) <= new Date()) {
+                showError('applicationDeadlineError', 'Deadline must be in the future');
+                isValid = false;
+            }
+            
+            if (!formData.duration) {
+                showError('projectDurationError', 'Please select project duration');
+                isValid = false;
+            }
+            
+            if (!formData.hoursPerWeek) {
+                showError('hoursPerWeekError', 'Please select hours per week');
+                isValid = false;
+            }
+            
+            if (!formData.requiredSkills) {
+                showError('requiredSkillsError', 'Required skills are mandatory');
+                isValid = false;
+            }
+            
+            if (!formData.educationLevel) {
+                showError('educationLevelError', 'Please select education level');
+                isValid = false;
+            }
+            
+            if (!formData.experienceLevel) {
+                showError('experienceLevelError', 'Please select experience level');
+                isValid = false;
+            }
+            
+            if (!formData.workLocation) {
+                showError('workLocationError', 'Please select work location');
+                isValid = false;
+            }
+            
+            if (!formData.companyName) {
+                showError('companyNameError', 'Company name is required');
+                isValid = false;
+            }
+            
+            if (!formData.contactPerson) {
+                showError('contactPersonError', 'Contact person is required');
+                isValid = false;
+            }
+            
+            if (!formData.contactEmail) {
+                showError('contactEmailError', 'Contact email is required');
+                isValid = false;
+            } else if (!isValidEmail(formData.contactEmail)) {
+                showError('contactEmailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            if (!formData.termsAccepted) {
+                showError('termsAcceptedError', 'You must agree to the terms and conditions');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Show loading state
+                const submitBtn = document.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Posting...';
+                submitBtn.disabled = true;
+                
+                // Submit to API
+                apiFetch('/php/api.php/gigs', {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (response.success) {
+                        showNotification('Gig posted successfully!', 'success');
+                        // Reset form
+                        document.getElementById('post-gig-form').reset();
+                        // Redirect to posted gigs
+                        setTimeout(() => {
+                            window.location.href = 'posted-gigs.html';
+                        }, 1500);
+                    } else {
+                        showNotification(response.error || 'Failed to post gig', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Gig posting error:', error);
+                    showNotification('Failed to post gig. Please try again.', 'error');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                });
+            }
+        });
+        
+        // Show/hide specific location field based on work location
+        document.getElementById('workLocation').addEventListener('change', function() {
+            const specificLocationField = document.getElementById('specificLocationField');
+            if (this.value === 'on_campus' || this.value === 'hybrid') {
+                specificLocationField.style.display = 'block';
+            } else {
+                specificLocationField.style.display = 'none';
+            }
+        });
+        
+        // Save draft functionality
+        document.getElementById('saveDraftBtn').addEventListener('click', function() {
+            const formData = {
+                title: document.getElementById('gigTitle').value.trim(),
+                description: document.getElementById('gigDescription').value.trim(),
+                type: document.getElementById('gigType').value,
+                category: document.getElementById('gigCategory').value,
+                budget: document.getElementById('compensation').value,
+                deadline: document.getElementById('applicationDeadline').value,
+                duration: document.getElementById('projectDuration').value,
+                hoursPerWeek: document.getElementById('hoursPerWeek').value,
+                requiredSkills: document.getElementById('requiredSkills').value.trim(),
+                preferredSkills: document.getElementById('preferredSkills').value.trim(),
+                educationLevel: document.getElementById('educationLevel').value,
+                experienceLevel: document.getElementById('experienceLevel').value,
+                workLocation: document.getElementById('workLocation').value,
+                specificLocation: document.getElementById('specificLocation').value.trim(),
+                companyName: document.getElementById('companyName').value.trim(),
+                contactPerson: document.getElementById('contactPerson').value.trim(),
+                contactEmail: document.getElementById('contactEmail').value.trim(),
+                additionalNotes: document.getElementById('additionalNotes').value.trim()
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('gigDraft', JSON.stringify(formData));
+            showNotification('Draft saved successfully!', 'success');
+        });
+        
+        // Load draft on page load
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('gigDraft');
+            if (draft) {
+                try {
+                    const formData = JSON.parse(draft);
+                    // Populate form fields
+                    Object.keys(formData).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = formData[key];
+                        }
+                    });
+                    
+                    // Trigger work location change to show/hide specific location
+                    document.getElementById('workLocation').dispatchEvent(new Event('change'));
+                } catch (error) {
+                    console.error('Error loading draft:', error);
+                }
+            }
+        });
+        
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => {
+                element.textContent = '';
+                element.style.display = 'none';
+            });
+        }
+        
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                errorElement.style.color = 'var(--danger)';
+                errorElement.style.fontSize = '12px';
+                errorElement.style.marginTop = '4px';
+            }
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
+
+
+
+
+

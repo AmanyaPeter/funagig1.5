@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Dashboard - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">JD</div> John Doe
+            </div>
+            <nav class="navlist">
+                <a class="navitem active" href="student-dashboard.html">Dashboard</a>
+                <a class="navitem" href="gigs.html">Gigs</a>
+                <a class="navitem" href="student-profile.html">Profile</a>
+                <a class="navitem" href="student-messaging.html">Messages</a>
+                <a class="navitem" href="index.html">Log out</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1 class="h1">Welcome, John Doe</h1>
+
+            <!-- Quick Stats -->
+            <div class="grid-4">
+                <div class="section"><div style="font-size:32px; color:var(--primary);">3</div><p>Active Tasks</p></div>
+                <div class="section"><div style="font-size:32px; color:var(--warning);">2</div><p>Pending Tasks</p></div>
+                <div class="section"><div style="font-size:32px; color:var(--success);">5</div><p>Completed Tasks</p></div>
+                <div class="section"><div style="font-size:32px; color:var(--info);">4.6</div><p>Average Rating</p></div>
+            </div>
+            <div class="grid-4 mt-20">
+                <div class="section"><div style="font-size:24px; color:var(--success);">sh.2,100,000</div><p>Total Earned</p></div>
+                <div class="section"><div style="font-size:24px; color:var(--primary);">10</div><p>Total Tasks</p></div>
+                <div class="section"><div style="font-size:24px; color:var(--warning);">45</div><p>Days Active</p></div>
+                <div class="section"><a class="btn" href="gigs.html">Browse Gigs</a></div>
+            </div>
+
+            <!-- Recent Applications Summary -->
+            <div class="section mt-20">
+                <h2 class="h2">Recent Applications</h2>
+                <table class="table">
+                    <thead><tr><th>Gig</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                        <tr><td>Web Dev</td><td><span class="pill yellow">Pending</span></td><td>2024-09-15</td></tr>
+                        <tr><td>Graphic Design</td><td><span class="pill green">Accepted</span></td><td>2024-09-10</td></tr>
+                    </tbody>
+                </table>
+                <a href="student-profile.html#applications" class="btn secondary mt-10">View All Applications</a>
+            </div>
+
+            <!-- Recent Activity & Notifications -->
+            <div class="grid-2 mt-20">
+                <div class="section">
+                    <h2 class="h2">Recent Activity</h2>
+                    <ul id="recentActivity"><li>Saved gig: Social Media</li><li>Applied to: Tutoring</li></ul>
+                </div>
+                <div class="section">
+                    <h2 class="h2">Notifications</h2>
+                    <ul id="notifications"><li>New message from Employer</li><li>Application accepted</li></ul>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section mt-20">
+                <h2 class="h2">Quick Actions</h2>
+                <div class="grid-4">
+                    <a class="btn" href="gigs.html#browse">Apply to Gigs</a>
+                    <a class="btn secondary" href="gigs.html#saved">View Saved</a>
+                    <a class="btn" href="student-messaging.html">Check Messages</a>
+                    <a class="btn secondary" href="student-profile.html">Edit Profile</a>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>

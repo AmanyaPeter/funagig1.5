@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">JD</div> John Doe
+            </div>
+            <nav class="navlist">
+                <a class="navitem" href="student-dashboard.html">Dashboard</a>
+                <a class="navitem" href="gigs.html">Gigs</a>
+                <a class="navitem active" href="student-profile.html">Profile</a>
+                <a class="navitem" href="student-messaging.html">Messages</a>
+                <a class="navitem" href="index.html">Log out</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1 class="h1">Profile</h1>
+            <form id="profile-form">
+                <div class="section">
+                    <h2>Personal Info</h2>
+                    <div class="flex items-center gap-10">
+                        <div class="cover-img">JD</div>
+                        <button type="button" class="btn secondary">Change Photo</button>
+                    </div>
+                    <input class="input mt-10" name="name" value="John Doe" placeholder="Full Name" />
+                    <input class="input mt-10" name="email" value="john@example.com" placeholder="Email" />
+                    <input class="input mt-10" name="phone" value="+256 123 456 789" placeholder="Phone" />
+                </div>
+                <div class="section mt-20">
+                    <h2>Academic Info</h2>
+                    <input class="input" name="university" value="Makerere University" placeholder="University" />
+                    <input class="input mt-10" name="major" value="Computer Science" placeholder="Major" />
+                    <select class="select mt-10" name="year"><option>Year 2</option></select>
+                </div>
+                <div class="section mt-20">
+                    <h2>Skills</h2>
+                    <div class="flex flex-wrap gap-8">
+                        <span class="pill blue">Web Dev</span> <!-- Add/remove via JS -->
+                    </div>
+                    <input class="input mt-10" placeholder="Add Skill" />
+                </div>
+                <div class="section mt-20">
+                    <h2>Availability & Payment</h2>
+                    <select class="select" name="availability"><option>Part-Time</option></select>
+                    <input class="input mt-10" name="payment" value="Bank ****1234" placeholder="Payment Info" />
+                </div>
+                <button type="submit" class="btn mt-20">Save Changes</button>
+            </form>
+
+            <div id="applications" class="section mt-40">
+                <h2>Applications History</h2>
+                <div class="filters flex gap-10">
+                    <select><option>Status: All</option></select>
+                    <select><option>Sort: Newest</option></select>
+                    <input placeholder="Search" />
+                </div>
+                <table class="table mt-10">
+                    <thead><tr><th>Gig</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                        <tr><td>Web Dev</td><td><span class="pill yellow">Pending</span></td><td>2024-09-15</td></tr>
+                        <!-- More rows -->
+                    </tbody>
+                </table>
+                <div class="text-right subtle mt-10">1 2 3 … 10 »</div>
+            </div>
+
+            <div class="section mt-20">
+                <h2>Completed Gigs</h2>
+                <table class="table">
+                    <thead><tr><th>Gig</th><th>Client</th><th>Earnings</th><th>Date</th></tr></thead>
+                    <tbody>
+                        <tr><td>Poster Design</td><td>Events Committee</td><td>sh.200,000</td><td>2025-06-12</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>

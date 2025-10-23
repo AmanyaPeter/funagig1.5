@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Messages - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">JD</div> John Doe
+            </div>
+            <nav class="navlist">
+                <a class="navitem" href="student-dashboard.html">Dashboard</a>
+                <a class="navitem" href="gigs.html">Gigs</a>
+                <a class="navitem" href="student-profile.html">Profile</a>
+                <a class="navitem active" href="student-messaging.html">Messages</a>
+                <a class="navitem" href="index.html">Log out</a>
+            </nav>
+        </aside>
+        <main class="messaging-container">
+            <!-- Existing messaging content from document -->
+            <div class="conversations-sidebar">
+                <div class="conversations-header">
+                    <h2>Messages</h2>
+                    <input type="text" placeholder="Search..." />
+                </div>
+                <div id="conversationsList" class="conversations-list">
+                    <!-- JS-loaded -->
+                </div>
+            </div>
+            <div class="chat-area">
+                <div id="chatHeader" class="chat-header" style="display:none;">
+                    <div class="chat-user-info">
+                        <div id="chatUserAvatar" class="chat-user-avatar">B</div>
+                        <div class="chat-user-details">
+                            <h3 id="chatUserName">Employer</h3>
+                            <p id="chatUserEmail">email@example.com</p>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button onclick="viewGigDetails()">View Gig</button>
+                        <button onclick="reportEmployer()">Report</button>
+                    </div>
+                </div>
+                <div id="chatMessages" class="chat-messages">
+                    <div class="no-conversation">
+                        <h3>Select Conversation</h3>
+                        <p>Chats start when employer messages you.</p>
+                    </div>
+                </div>
+                <div id="chatInputArea" class="chat-input-area" style="display:none;">
+                    <input type="file" id="fileInput" style="display:none;" />
+                    <button onclick="document.getElementById('fileInput').click()">📎</button>
+                    <textarea id="messageInput" placeholder="Type message..."></textarea>
+                    <button id="sendBtn" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+    <!-- Existing JS for messaging -->
+</body>
+</html>
