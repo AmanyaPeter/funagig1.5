@@ -9,7 +9,7 @@ require_once 'config.php';
 // Get request method and path
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path = str_replace('/funagig/php/api.php', '', $path);
+$path = str_replace('/php/api.php', '', $path);
 
 // Route the request
 switch ($path) {
@@ -31,17 +31,38 @@ switch ($path) {
     case '/gigs':
         handleGigs();
         break;
+    case '/gigs/saved':
+        handleSavedGigs();
+        break;
+    case '/gigs/posted':
+        handlePostedGigs();
+        break;
     case '/gigs/active':
         handleActiveGigs();
         break;
     case '/applications':
-        handleApplications();
+        handleApplyToGig();
+        break;
+    case '/applicants':
+        handleApplicants();
+        break;
+    case '/analytics':
+        handleAnalytics();
+        break;
+    case '/notifications':
+        handleNotifications();
         break;
     case '/conversations':
         handleConversations();
         break;
     case '/messages':
         handleMessages();
+        break;
+    case '/contact':
+        handleContact();
+        break;
+    case '/forgot-password':
+        handleForgotPassword();
         break;
     default:
         if (strpos($path, '/messages/') === 0) {
@@ -376,6 +397,12 @@ function handleGigs() {
                 sendError('Failed to create gig');
             }
             
+            // Notify students
+            $students = $db->fetchAll("SELECT id FROM users WHERE type = 'student'");
+            foreach ($students as $student) {
+                createNotification($student['id'], 'New Gig Posted', "A new gig has been posted: " . sanitizeInput($input['title'] ?? ''));
+            }
+
             sendResponse(['success' => true, 'gig_id' => $gigId]);
             
         } catch (Exception $e) {
@@ -414,7 +441,70 @@ function handleActiveGigs() {
 }
 
 // Applications handler
-function handleApplications() {
+function handleApplicants() {
+    requireAuth();
+
+    $user = getCurrentUser();
+    $db = Database::getInstance();
+
+    if ($user['type'] === 'business') {
+        $applicants = $db->fetchAll(
+            "SELECT a.*, u.name as student_name, g.title as gig_title
+             FROM applications a
+             JOIN users u ON a.user_id = u.id
+             JOIN gigs g ON a.gig_id = g.id
+             WHERE g.user_id = ?",
+            [$user['id']]
+        );
+    } else {
+        sendError('Unauthorized', 403);
+    }
+
+    sendResponse(['success' => true, 'applicants' => $applicants]);
+}
+
+function createNotification($userId, $title, $message) {
+    $db = Database::getInstance();
+    $db->insert(
+        "INSERT INTO notifications (user_id, title, message, created_at) VALUES (?, ?, ?, NOW())",
+        [$userId, $title, $message]
+    );
+}
+
+function handleNotifications() {
+    requireAuth();
+    $db = Database::getInstance();
+    $userId = $_SESSION['user_id'];
+
+    $notifications = $db->fetchAll("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC", [$userId]);
+    sendResponse(['success' => true, 'notifications' => $notifications]);
+}
+
+function handleAnalytics() {
+    requireAuth();
+
+    $user = getCurrentUser();
+    $db = Database::getInstance();
+
+    if ($user['type'] === 'business') {
+        $total_views = $db->fetchOne("SELECT SUM(view_count) as total FROM gigs WHERE user_id = ?", [$user['id']])['total'];
+        $total_applicants = $db->fetchOne("SELECT COUNT(a.id) as total FROM applications a JOIN gigs g ON a.gig_id = g.id WHERE g.user_id = ?", [$user['id']])['total'];
+        $hired_count = $db->fetchOne("SELECT COUNT(a.id) as total FROM applications a JOIN gigs g ON a.gig_id = g.id WHERE g.user_id = ? AND a.status = 'accepted'", [$user['id']])['total'];
+        $hiring_rate = $total_applicants > 0 ? ($hired_count / $total_applicants) * 100 : 0;
+
+        $analytics = [
+            'total_views' => $total_views,
+            'total_applicants' => $total_applicants,
+            'hiring_rate' => round($hiring_rate, 2),
+        ];
+    } else {
+        sendError('Unauthorized', 403);
+    }
+
+    sendResponse(['success' => true, 'analytics' => $analytics]);
+}
+
+function handleApplyToGig() {
     requireAuth();
     
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -443,6 +533,10 @@ function handleApplications() {
             ]
         );
         
+        // Notify business
+        $gig = $db->fetchOne("SELECT user_id, title FROM gigs WHERE id = ?", [$input['gig_id']]);
+        createNotification($gig['user_id'], 'New Application', "You have a new application for your gig: " . $gig['title']);
+
         sendResponse(['success' => true, 'application_id' => $applicationId]);
     }
 }
@@ -484,6 +578,52 @@ function handleConversations() {
     }
 }
 
+function handleSavedGigs() {
+    requireAuth();
+    $db = Database::getInstance();
+    $userId = $_SESSION['user_id'];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        $gigs = $db->fetchAll(
+            "SELECT g.* FROM gigs g JOIN saved_gigs sg ON g.id = sg.gig_id WHERE sg.user_id = ?",
+            [$userId]
+        );
+        sendResponse(['success' => true, 'gigs' => $gigs]);
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $gigId = $input['gig_id'];
+
+        $existing = $db->fetchOne("SELECT id FROM saved_gigs WHERE user_id = ? AND gig_id = ?", [$userId, $gigId]);
+
+        if (!$existing) {
+            $db->insert("INSERT INTO saved_gigs (user_id, gig_id) VALUES (?, ?)", [$userId, $gigId]);
+        }
+        sendResponse(['success' => true]);
+    }
+}
+
+function handlePostedGigs() {
+    requireAuth();
+
+    $user = getCurrentUser();
+    $db = Database::getInstance();
+
+    if ($user['type'] === 'business') {
+        $gigs = $db->fetchAll(
+            "SELECT g.*,
+             (SELECT COUNT(*) FROM applications WHERE gig_id = g.id) as applicant_count
+             FROM gigs g
+             WHERE g.user_id = ?
+             ORDER BY g.created_at DESC",
+            [$user['id']]
+        );
+    } else {
+        sendError('Unauthorized', 403);
+    }
+
+    sendResponse(['success' => true, 'gigs' => $gigs]);
+}
+
 function handleMessages() {
     requireAuth();
     
@@ -502,6 +642,70 @@ function handleMessages() {
         );
         
         sendResponse(['success' => true, 'message_id' => $messageId]);
+    }
+}
+
+function handleForgotPassword() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        sendError('Method not allowed', 405);
+    }
+
+    try {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $email = sanitizeInput($input['email'] ?? '');
+
+        if (empty($email) || !validateEmail($email)) {
+            sendError('A valid email is required');
+        }
+
+        $db = Database::getInstance();
+        $user = $db->fetchOne("SELECT id FROM users WHERE email = ?", [$email]);
+
+        if ($user) {
+            $token = generateToken();
+            // In a real app, you'd store this token and email it to the user.
+            error_log("Password reset for $email, token: $token");
+        }
+
+        // Always return success to prevent user enumeration
+        sendResponse(['success' => true, 'message' => 'If your email is in our system, you will receive a password reset link.']);
+
+    } catch (Exception $e) {
+        error_log("Forgot password error: " . $e->getMessage());
+        sendError('An error occurred. Please try again.');
+    }
+}
+
+function handleContact() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        sendError('Method not allowed', 405);
+    }
+
+    try {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $name = sanitizeInput($input['name'] ?? '');
+        $email = sanitizeInput($input['email'] ?? '');
+        $subject = sanitizeInput($input['subject'] ?? '');
+        $message = sanitizeInput($input['message'] ?? '');
+
+        if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+            sendError('All fields are required');
+        }
+
+        if (!validateEmail($email)) {
+            sendError('Invalid email format');
+        }
+
+        // In a real application, you would send an email here.
+        // For this example, we'll just log it.
+        error_log("Contact form submission: Name: $name, Email: $email, Subject: $subject, Message: $message");
+
+        sendResponse(['success' => true, 'message' => 'Message sent successfully']);
+
+    } catch (Exception $e) {
+        error_log("Contact form error: " . $e->getMessage());
+        sendError('An error occurred while sending the message. Please try again.');
     }
 }
 

@@ -19,7 +19,7 @@
             </div>
             <nav class="navlist">
                 <a class="navitem" href="student-dashboard.html">Dashboard</a>
-                <a class="navitem active" href="gigs.html">Gigs</a>
+                <a class="navitem active" href="student-gigs.html">Gigs</a>
                 <a class="navitem" href="student-profile.html">Profile</a>
                 <a class="navitem" href="student-messaging.html">Messages</a>
                 <a class="navitem" href="index.html">Log out</a>
@@ -117,16 +117,28 @@
             try {
                 const response = await apiFetch('/gigs');
                 if (response.success) {
-                    updateGigsList(response.gigs);
+                    updateGigsList(response.gigs, 'browse');
                 }
             } catch (error) {
                 console.error('Failed to load gigs:', error);
                 showNotification('Failed to load gigs', 'error');
             }
         }
+
+        async function loadSavedGigs() {
+            try {
+                const response = await apiFetch('/gigs/saved');
+                if (response.success) {
+                    updateGigsList(response.gigs, 'saved');
+                }
+            } catch (error) {
+                console.error('Failed to load saved gigs:', error);
+                showNotification('Failed to load saved gigs', 'error');
+            }
+        }
         
-        function updateGigsList(gigs) {
-            const gigsContainer = document.querySelector('.card-grid');
+        function updateGigsList(gigs, tab) {
+            const gigsContainer = document.getElementById(tab).querySelector('.card-grid');
             if (gigsContainer && gigs) {
                 gigsContainer.innerHTML = gigs.map(gig => `
                     <article class="section" style="display:grid; grid-template-columns:160px 1fr auto; gap:16px;">
@@ -185,6 +197,10 @@
             document.getElementById(tabId).style.display = 'block';
             document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
             event.target.classList.add('active');
+
+            if (tabId === 'saved') {
+                loadSavedGigs();
+            }
         }
     </script>
     <script src="js/app.js"></script>

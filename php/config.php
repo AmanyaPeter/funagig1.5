@@ -5,8 +5,8 @@
 // Database configuration
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'funagig');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_USER', 'funagig_user');
+define('DB_PASS', 'funagig_password');
 
 // Application configuration
 define('APP_NAME', 'FunaGig');

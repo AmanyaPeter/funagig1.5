@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Applicants - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">TS</div> Tech Solutions Inc.
+            </div>
+            <nav class="navlist">
+                <a class="navitem" href="business-dashboard.html">Dashboard</a>
+                <a class="navitem" href="business-gigs.html">Post Gig</a>
+                <a class="navitem" href="posted-gigs.html">My Gigs</a>
+                <a class="navitem active" href="applicants.html">Applicants</a>
+                <a class="navitem" href="business-analytics.html">Analytics</a>
+                <a class="navitem" href="business-profile.html">Profile</a>
+                <a class="navitem" href="#" onclick="Auth.logout(); return false;">Log out</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="section">
+                <h1 class="h1">Applicants</h1>
+                <div id="applicants-list"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const user = Auth.getUser();
+            if (user) {
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+
+                loadApplicants();
+            }
+        });
+
+        async function loadApplicants() {
+            try {
+                const response = await apiFetch('/applicants');
+                if (response.success) {
+                    renderApplicants(response.applicants);
+                }
+            } catch (error) {
+                console.error('Failed to load applicants:', error);
+                showNotification('Failed to load applicants', 'error');
+            }
+        }
+
+        function renderApplicants(applicants) {
+            const applicantsList = document.getElementById('applicants-list');
+            if (applicants && applicants.length > 0) {
+                applicantsList.innerHTML = applicants.map(applicant => `
+                    <div class="card mb-10">
+                        <h3>${applicant.student_name}</h3>
+                        <p>Applied for: ${applicant.gig_title}</p>
+                        <p>Status: ${applicant.status}</p>
+                        <a href="student-profile.html?id=${applicant.user_id}">View Profile</a>
+                    </div>
+                `).join('');
+            } else {
+                applicantsList.innerHTML = '<p>You have no applicants yet.</p>';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -19,7 +19,7 @@
             </div>
             <nav class="navlist">
                 <a class="navitem active" href="student-dashboard.html">Dashboard</a>
-                <a class="navitem" href="gigs.html">Gigs</a>
+                <a class="navitem" href="student-gigs.html">Gigs</a>
                 <a class="navitem" href="student-profile.html">Profile</a>
                 <a class="navitem" href="student-messaging.html">Messages</a>
                 <a class="navitem" href="#" onclick="Auth.logout(); return false;">Log out</a>
@@ -39,7 +39,7 @@
                 <div class="section"><div style="font-size:24px; color:var(--success);">sh.2,100,000</div><p>Total Earned</p></div>
                 <div class="section"><div style="font-size:24px; color:var(--primary);">10</div><p>Total Tasks</p></div>
                 <div class="section"><div style="font-size:24px; color:var(--warning);">45</div><p>Days Active</p></div>
-                <div class="section"><a class="btn" href="gigs.html">Browse Gigs</a></div>
+                <div class="section"><a class="btn" href="student-gigs.html">Browse Gigs</a></div>
             </div>
 
             <!-- Recent Applications Summary -->
@@ -71,8 +71,8 @@
             <div class="section mt-20">
                 <h2 class="h2">Quick Actions</h2>
                 <div class="grid-4">
-                    <a class="btn" href="gigs.html#browse">Apply to Gigs</a>
-                    <a class="btn secondary" href="gigs.html#saved">View Saved</a>
+                    <a class="btn" href="student-gigs.html#browse">Apply to Gigs</a>
+                    <a class="btn secondary" href="student-gigs.html#saved">View Saved</a>
                     <a class="btn" href="student-messaging.html">Check Messages</a>
                     <a class="btn secondary" href="student-profile.html">Edit Profile</a>
                 </div>
@@ -118,12 +118,25 @@
                 if (response.success) {
                     updateDashboardStats(response.stats);
                 }
+                const notificationsResponse = await apiFetch('/notifications');
+                if (notificationsResponse.success) {
+                    updateNotifications(notificationsResponse.notifications);
+                }
             } catch (error) {
                 console.error('Failed to load dashboard data:', error);
                 showNotification('Failed to load dashboard data', 'error');
             }
         }
         
+        function updateNotifications(notifications) {
+            const notificationsList = document.getElementById('notifications');
+            if (notificationsList && notifications) {
+                notificationsList.innerHTML = notifications.map(notification => `
+                    <li>${notification.title}: ${notification.message}</li>
+                `).join('');
+            }
+        }
+
         function updateDashboardStats(stats) {
             // Update stats in the grid
             const activeTasks = document.querySelector('.grid-4 .section:nth-child(1) div');

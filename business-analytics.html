@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Analytics - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">TS</div> Tech Solutions Inc.
+            </div>
+            <nav class="navlist">
+                <a class="navitem" href="business-dashboard.html">Dashboard</a>
+                <a class="navitem" href="business-gigs.html">Post Gig</a>
+                <a class="navitem" href="posted-gigs.html">My Gigs</a>
+                <a class="navitem" href="applicants.html">Applicants</a>
+                <a class="navitem active" href="business-analytics.html">Analytics</a>
+                <a class="navitem" href="business-profile.html">Profile</a>
+                <a class="navitem" href="#" onclick="Auth.logout(); return false;">Log out</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="section">
+                <h1 class="h1">Analytics</h1>
+                <div id="analytics-data"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const user = Auth.getUser();
+            if (user) {
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+
+                loadAnalytics();
+            }
+        });
+
+        async function loadAnalytics() {
+            try {
+                const response = await apiFetch('/analytics');
+                if (response.success) {
+                    renderAnalytics(response.analytics);
+                }
+            } catch (error) {
+                console.error('Failed to load analytics:', error);
+                showNotification('Failed to load analytics', 'error');
+            }
+        }
+
+        function renderAnalytics(analytics) {
+            const analyticsData = document.getElementById('analytics-data');
+            if (analytics) {
+                analyticsData.innerHTML = `
+                    <div class="card">
+                        <h3>Total Views: ${analytics.total_views}</h3>
+                        <h3>Total Applicants: ${analytics.total_applicants}</h3>
+                        <h3>Hiring Rate: ${analytics.hiring_rate}%</h3>
+                    </div>
+                `;
+            } else {
+                analyticsData.innerHTML = '<p>No analytics data available yet.</p>';
+            }
+        }
+    </script>
+</body>
+
+</html>
