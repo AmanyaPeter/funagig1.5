@@ -107,9 +107,16 @@
                         localStorage.setItem('user', JSON.stringify(response.user));
                         localStorage.setItem('userType', response.userType);
                         localStorage.setItem('isLoggedIn', 'true');
-                        alert('Login successful! Redirecting...');
-                        window.location.href = response.userType === 'student' ? 'student-dashboard.html' : 'business-profile.html';
-                    } else {
+                        //alert('Login successful! Redirecting...');
+                        window.location.href = response.userType === 'student' ? 'student-dashboard.html' : 'business-dashboard.html';
+                    } 
+                    if (response.success && response.userType === 'business') {
+                        localStorage.setItem('user', JSON.stringify(response.user));
+                        localStorage.setItem('userType', response.userType);
+                        localStorage.setItem('isLoggedIn', 'true');
+                          Auth.setUser(response.user);
+                        window.location.href = 'business-dashboard.html'; // Changed 
+                }else {
                         showError('emailError', response.error || 'Login failed');
                     }
                 })

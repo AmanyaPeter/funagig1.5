@@ -43,6 +43,22 @@ switch ($path) {
     case '/messages':
         handleMessages();
         break;
+    // For the missing business pages
+    case '/gigs/update':
+        handleUpdateGig();
+        break;
+    case '/gigs/delete':
+        handleDeleteGig();
+        break;
+    case '/applicants':
+        handleGetApplicants();
+        break;
+    case '/applicants/accept':
+        handleAcceptApplicant();
+        break;
+    case '/applicants/reject':
+        handleRejectApplicant();
+        break;
     default:
         if (strpos($path, '/messages/') === 0) {
             $conversationId = substr($path, 10);
@@ -518,6 +534,98 @@ function handleMessagesByConversation($conversationId) {
     );
     
     sendResponse(['success' => true, 'messages' => $messages]);
+}
+//Extra stuff am not so sure about
+function handleUpdateGig() {
+    requireAuth();
+    $input = json_decode(file_get_contents('php://input'), true);
+    $gigId = $input['gig_id'];
+    $userId = $_SESSION['user_id'];
+    
+    $db = Database::getInstance();
+    $affected = $db->update(
+        "UPDATE gigs SET title=?, description=?, budget=?, deadline=?, status=? 
+         WHERE id=? AND user_id=?",
+        [
+            $input['title'],
+            $input['description'],
+            $input['budget'],
+            $input['deadline'],
+            $input['status'],
+            $gigId,
+            $userId
+        ]
+    );
+    
+    sendResponse(['success' => $affected > 0]);
+}
+
+function handleDeleteGig() {
+    requireAuth();
+    $input = json_decode(file_get_contents('php://input'), true);
+    $gigId = $input['gig_id'];
+    $userId = $_SESSION['user_id'];
+    
+    $db = Database::getInstance();
+    $affected = $db->delete(
+        "DELETE FROM gigs WHERE id=? AND user_id=?",
+        [$gigId, $userId]
+    );
+    
+    sendResponse(['success' => $affected > 0]);
+}
+
+function handleGetApplicants() {
+    requireAuth();
+    $userId = $_SESSION['user_id'];
+    $gigId = $_GET['gig_id'] ?? null;
+    
+    $db = Database::getInstance();
+    $sql = "SELECT a.*, g.title as gig_title, u.name as student_name, 
+            u.university, u.major, u.skills
+            FROM applications a
+            JOIN gigs g ON a.gig_id = g.id
+            JOIN users u ON a.user_id = u.id
+            WHERE g.user_id = ?";
+    
+    $params = [$userId];
+    if ($gigId) {
+        $sql .= " AND g.id = ?";
+        $params[] = $gigId;
+    }
+    
+    $applicants = $db->fetchAll($sql, $params);
+    sendResponse(['success' => true, 'applicants' => $applicants]);
+}
+
+function handleAcceptApplicant() {
+    requireAuth();
+    $input = json_decode(file_get_contents('php://input'), true);
+    $applicationId = $input['application_id'];
+    
+    $db = Database::getInstance();
+    $affected = $db->update(
+        "UPDATE applications SET status='accepted', responded_at=NOW() 
+         WHERE id=?",
+        [$applicationId]
+    );
+    
+    sendResponse(['success' => $affected > 0]);
+}
+
+function handleRejectApplicant() {
+    requireAuth();
+    $input = json_decode(file_get_contents('php://input'), true);
+    $applicationId = $input['application_id'];
+    
+    $db = Database::getInstance();
+    $affected = $db->update(
+        "UPDATE applications SET status='rejected', responded_at=NOW() 
+         WHERE id=?",
+        [$applicationId]
+    );
+    
+    sendResponse(['success' => $affected > 0]);
 }
 ?>
 
