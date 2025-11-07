@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Business Profile - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">TS</div> Tech Solutions Inc.
+            </div>
+            <nav class="navlist">
+                <a class="navitem" href="business-dashboard.html">Dashboard</a>
+                <a class="navitem" href="business-post-gig.html">Post Gig</a>
+                <a class="navitem" href="business-posted-gigs.html">My Gigs</a>
+                <a class="navitem" href="business-applicants.html">Applicants</a>
+                <a class="navitem" href="business-messaging.html">Messages</a>
+                <a class="navitem active" href="business-profile.html">Profile</a>
+                <a class="navitem" href="#" onclick="Auth.logout(); return false;">Log out</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="section">
+                <div class="flex items-center justify-between mb-20">
+                    <div>
+                        <h1 class="h1" style="font-size:28px; margin:0;">Business Profile</h1>
+                        <p class="subtle">Manage your business information and settings</p>
+                    </div>
+                    <div class="flex gap-10">
+                        <button class="btn" onclick="editProfile()">Edit Profile</button>
+                        <a href="business-dashboard.html" class="btn secondary">Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Company Overview -->
+                <div class="section mb-20">
+                <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-16">
+                            <div class="cover-img" style="width:80px;height:80px;font-size:32px;">TS</div>
+                        <div>
+                                <h2 style="margin: 0; font-size: 24px;">Tech Solutions Inc.</h2>
+                                <p class="subtle" style="margin: 4px 0;">Software Development Company</p>
+                                <p class="subtle">Established in 2015 | 50–100 employees</p>
+                                <div class="flex items-center gap-10 mt-8">
+                                    <span class="pill green">Verified Business</span>
+                                    <span class="pill blue">Premium Member</span>
+                                </div>
+                        </div>
+                    </div>
+                        <div class="text-right">
+                            <div style="font-size: 18px; font-weight: 600;">4.7/5</div>
+                            <div class="subtle">Average Rating</div>
+                            <div class="subtle" style="font-size: 12px;">Based on 24 reviews</div>
+                        </div>
+                </div>
+            </div>
+
+                <!-- Business Information -->
+                <div class="grid-2 mb-20">
+                    <div class="section">
+                        <h3 class="h3" style="margin-bottom: 16px;">Company Information</h3>
+                        <div class="info-item">
+                            <span class="label">Industry</span>
+                            <span>Technology</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Company Size</span>
+                            <span>50-100 employees</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Founded</span>
+                            <span>2015</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Location</span>
+                            <span>123 Innovation Drive, Tech City, Kampala</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Website</span>
+                            <span><a href="https://www.techsolutions.com" target="_blank" style="color: var(--primary);">www.techsolutions.com</a></span>
+                        </div>
+                    </div>
+            <div class="section">
+                        <h3 class="h3" style="margin-bottom: 16px;">Contact Information</h3>
+                        <div class="info-item">
+                            <span class="label">Primary Contact</span>
+                            <span>Amanya Peter</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Email</span>
+                            <span>contact@techsolutions.com</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Phone</span>
+                            <span>+256 700 123 456</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">LinkedIn</span>
+                            <span><a href="#" style="color: var(--primary);">linkedin.com/company/techsolutions</a></span>
+                    </div>
+                        <div class="info-item">
+                            <span class="label">Twitter</span>
+                            <span><a href="#" style="color: var(--primary);">@techsolutions</a></span>
+                    </div>
+                </div>
+            </div>
+
+                <!-- Business Description -->
+                <div class="section mb-20">
+                    <h3 class="h3" style="margin-bottom: 16px;">About Us</h3>
+                    <p style="line-height: 1.6; margin-bottom: 16px;">
+                        Tech Solutions Inc. is a leading software development company specializing in innovative web and mobile applications. 
+                        We are committed to providing cutting-edge technology solutions to businesses of all sizes, with a focus on 
+                        scalability, security, and user experience.
+                    </p>
+                    <p style="line-height: 1.6; margin-bottom: 16px;">
+                        Our team of experienced developers, designers, and project managers work collaboratively to deliver high-quality 
+                        solutions that meet our clients' unique needs. We pride ourselves on our ability to adapt to new technologies 
+                        and industry trends while maintaining the highest standards of quality and professionalism.
+                    </p>
+                    <div class="flex gap-10">
+                        <span class="pill blue">Web Development</span>
+                        <span class="pill blue">Mobile Apps</span>
+                        <span class="pill blue">Cloud Solutions</span>
+                        <span class="pill blue">AI & Machine Learning</span>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="grid-4 mb-20">
+                    <div class="section" style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 800; color: var(--primary);">8</div>
+                        <div class="subtle">Active Gigs</div>
+                    </div>
+                    <div class="section" style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 800; color: var(--success);">45</div>
+                        <div class="subtle">Total Applicants</div>
+                    </div>
+                    <div class="section" style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 800; color: var(--warning);">12</div>
+                        <div class="subtle">Hired Students</div>
+                    </div>
+                    <div class="section" style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 800; color: var(--info);">4.7</div>
+                        <div class="subtle">Average Rating</div>
+                    </div>
+                </div>
+
+                <!-- Recent Reviews -->
+                <div class="section mb-20">
+                    <h3 class="h3" style="margin-bottom: 16px;">Recent Reviews</h3>
+                    <div class="review-item">
+                        <div class="flex items-center justify-between mb-2">
+                            <div style="font-weight: 600;">Sarah Johnson</div>
+                            <div>★★★★★</div>
+                        </div>
+                        <p class="subtle">"Excellent communication and delivered exactly what was needed. Highly recommended!"</p>
+                        <div class="subtle" style="font-size: 12px;">Website Design Project • 2 days ago</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="flex items-center justify-between mb-2">
+                            <div style="font-weight: 600;">Michael Chen</div>
+                            <div>★★★★☆</div>
+                        </div>
+                        <p class="subtle">"Great work on the mobile app design. Very professional and creative."</p>
+                        <div class="subtle" style="font-size: 12px;">Mobile App UI Design • 1 week ago</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="flex items-center justify-between mb-2">
+                            <div style="font-weight: 600;">Emma Wilson</div>
+                            <div>★★★★★</div>
+                        </div>
+                        <p class="subtle">"Outstanding graphic design work. Will definitely work with them again!"</p>
+                        <div class="subtle" style="font-size: 12px;">Logo Design Project • 2 weeks ago</div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+            <div class="section">
+                    <h3 class="h3" style="margin-bottom: 16px;">Account Settings</h3>
+                    <div class="grid-2">
+                        <div>
+                            <div class="setting-item">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div style="font-weight: 600;">Email Notifications</div>
+                                        <div class="subtle">Receive notifications about new applications and messages</div>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div style="font-weight: 600;">SMS Notifications</div>
+                                        <div class="subtle">Receive SMS alerts for urgent updates</div>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div style="font-weight: 600;">Profile Visibility</div>
+                                        <div class="subtle">Make your profile visible to students</div>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="setting-item">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div style="font-weight: 600;">Auto-approve Applications</div>
+                                        <div class="subtle">Automatically approve applications from verified students</div>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div style="font-weight: 600;">Weekly Reports</div>
+                                        <div class="subtle">Receive weekly performance reports</div>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div style="font-weight: 600;">Two-Factor Authentication</div>
+                                        <div class="subtle">Add an extra layer of security to your account</div>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Business Profile</h2>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="field">
+                        <label class="label">Company Name *</label>
+                        <input class="input" id="editCompanyName" value="Tech Solutions Inc." required />
+                    </div>
+                    <div class="field">
+                        <label class="label">Industry *</label>
+                        <select class="select" id="editIndustry" required>
+                            <option value="technology" selected>Technology</option>
+                            <option value="finance">Finance</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="retail">Retail</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="label">Company Size</label>
+                        <select class="select" id="editCompanySize">
+                            <option value="1-10">1-10 employees</option>
+                            <option value="11-50">11-50 employees</option>
+                            <option value="51-100" selected>51-100 employees</option>
+                            <option value="100+">100+ employees</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="label">Founded Year</label>
+                        <input type="number" class="input" id="editFounded" value="2015" min="1900" max="2025" />
+                    </div>
+                    <div class="field">
+                        <label class="label">Location *</label>
+                        <input class="input" id="editLocation" value="123 Innovation Drive, Tech City, Kampala" required />
+                    </div>
+                    <div class="field">
+                        <label class="label">Website</label>
+                        <input class="input" id="editWebsite" value="https://www.techsolutions.com" />
+                    </div>
+                    <div class="field">
+                        <label class="label">Description</label>
+                        <textarea class="textarea" id="editDescription" rows="4">Tech Solutions Inc. is a leading software development company specializing in innovative web and mobile applications. We are committed to providing cutting-edge technology solutions to businesses of all sizes.</textarea>
+                    </div>
+                    <div class="flex gap-10 mt-20">
+                        <button type="button" class="btn secondary" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Load user data and update profile
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verify session and check user type
+            if (!Auth.requireUserType('business')) {
+                return;
+            }
+            
+            // Verify session is still valid
+            const user = await Auth.verifySession();
+            if (!user) {
+                return; // verifySession already handles logout/redirect
+            }
+            
+            if (user) {
+                
+                // Update user name in sidebar
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Load profile data from API
+                loadProfileData();
+                
+                // Load business stats
+                loadBusinessStats();
+                
+                // Setup modal close on outside click
+                setupModalClose();
+            }
+        });
+        
+        // Load profile data from API
+        async function loadProfileData() {
+            try {
+                const response = await apiFetch('/profile');
+                if (response.success && response.user) {
+                    updateProfileInfo(response.user);
+                    populateEditForm(response.user);
+                } else {
+                    // Fallback to stored user data
+                    const user = Auth.getUser();
+                    updateProfileInfo(user);
+                    populateEditForm(user);
+                }
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+                // Use stored user data as fallback
+                const user = Auth.getUser();
+                updateProfileInfo(user);
+                populateEditForm(user);
+            }
+        }
+        
+        function updateProfileInfo(user) {
+            // Update company name in header
+            const companyName = document.querySelector('.section h2');
+            if (companyName) {
+                companyName.textContent = user.name || 'Business Name';
+            }
+            
+            // Update company name in overview
+            const overviewName = document.querySelector('.section.mb-20 h2');
+            if (overviewName) {
+                overviewName.textContent = user.name || 'Business Name';
+            }
+            
+            // Update avatar initials
+            const avatar = document.querySelector('.cover-img');
+            if (avatar && user.name) {
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                avatar.textContent = initials;
+            }
+            
+            // Update industry
+            const industryItems = document.querySelectorAll('.info-item');
+            industryItems.forEach(item => {
+                const label = item.querySelector('.label');
+                if (label && label.textContent.includes('Industry')) {
+                    const valueSpan = item.querySelector('span:last-child');
+                    if (valueSpan && user.industry) {
+                        valueSpan.textContent = user.industry;
+                    }
+                }
+            });
+            
+            // Update email
+            industryItems.forEach(item => {
+                const label = item.querySelector('.label');
+                if (label && label.textContent.includes('Email')) {
+                    const valueSpan = item.querySelector('span:last-child');
+                    if (valueSpan && user.email) {
+                        valueSpan.textContent = user.email;
+                    }
+                }
+            });
+            
+            // Update location
+            industryItems.forEach(item => {
+                const label = item.querySelector('.label');
+                if (label && label.textContent.includes('Location')) {
+                    const valueSpan = item.querySelector('span:last-child');
+                    if (valueSpan && user.location) {
+                        valueSpan.textContent = user.location;
+                    }
+                }
+            });
+            
+            // Update bio/description
+            const aboutSection = document.querySelector('.section.mb-20 p');
+            if (aboutSection && user.bio) {
+                aboutSection.textContent = user.bio;
+            }
+            
+            // Update skills
+            if (user.skills) {
+                const skillsContainer = document.querySelector('.flex.gap-10');
+                if (skillsContainer) {
+                    const skills = user.skills.split(',').map(s => s.trim());
+                    skillsContainer.innerHTML = skills.map(skill => 
+                        `<span class="pill blue">${escapeHtml(skill)}</span>`
+                    ).join('');
+                }
+            }
+        }
+        
+        function populateEditForm(user) {
+            document.getElementById('editCompanyName').value = user.name || '';
+            document.getElementById('editIndustry').value = user.industry || 'technology';
+            document.getElementById('editLocation').value = user.location || '';
+            document.getElementById('editWebsite').value = user.website || '';
+            document.getElementById('editDescription').value = user.bio || '';
+        }
+        
+        async function loadBusinessStats() {
+            try {
+                const response = await apiFetch('/dashboard');
+                if (response.success && response.stats) {
+                    updateBusinessStats(response.stats);
+                }
+            } catch (error) {
+                console.error('Failed to load business stats:', error);
+                // Don't show error - keep static data
+            }
+        }
+        
+        function updateBusinessStats(stats) {
+            const statSections = document.querySelectorAll('.grid-4 .section');
+            if (statSections.length >= 3) {
+                const activeGigsDiv = statSections[0].querySelector('div');
+                const totalApplicantsDiv = statSections[1].querySelector('div');
+                const hiredStudentsDiv = statSections[2].querySelector('div');
+                
+                if (activeGigsDiv) activeGigsDiv.textContent = stats.active_gigs || 0;
+                if (totalApplicantsDiv) totalApplicantsDiv.textContent = stats.total_applicants || 0;
+                if (hiredStudentsDiv) hiredStudentsDiv.textContent = stats.hired_students || 0;
+            }
+        }
+        
+        // Setup modal to close when clicking outside
+        function setupModalClose() {
+            const modal = document.getElementById('editModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeEditModal();
+                    }
+                });
+            }
+        }
+        
+        // Edit profile functionality
+        function editProfile() {
+            // Load current user data to populate form
+            const user = Auth.getUser();
+            if (user) {
+                populateEditForm(user);
+            }
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        // Handle edit profile form submission
+        document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+                
+                const formData = {
+                    name: document.getElementById('editCompanyName').value.trim(),
+                    industry: document.getElementById('editIndustry').value,
+                    location: document.getElementById('editLocation').value.trim(),
+                    website: document.getElementById('editWebsite').value.trim(),
+                    bio: document.getElementById('editDescription').value.trim()
+                };
+                
+                // Validate
+                if (!formData.name) {
+                    showNotification('Company name is required', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    return;
+                }
+                
+                const response = await apiFetch('/profile', {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.success) {
+                    showNotification('Profile updated successfully!', 'success');
+                    
+                    // Update stored user data
+                    const user = Auth.getUser();
+                    Object.assign(user, formData);
+                    Auth.setUser(user);
+                    
+                    closeEditModal();
+                    
+                    // Update displayed profile info
+                    updateProfileInfo(user);
+                } else {
+                    showNotification(response.error || 'Failed to update profile', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Profile update error:', error);
+                showNotification('Failed to update profile. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+
+</html>

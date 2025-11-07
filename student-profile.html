@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile - FunaGig</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo"></div> FunaGig
+        </div>
+    </header>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="title" style="display:flex; align-items:center; gap:10px;">
+                <div class="cover-img" style="width:36px;height:36px;">AP</div> Amanya Peter
+            </div>
+            <nav class="navlist">
+                <a class="navitem" href="student-dashboard.html">Dashboard</a>
+                <a class="navitem" href="student-gigs.html">Gigs</a>
+                <a class="navitem" href="student-messaging.html">Messages</a>
+                <a class="navitem active" href="student-profile.html">Profile</a>
+                <a class="navitem" href="index.html">Log out</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1 class="h1">Profile</h1>
+            <form id="profile-form">
+                <div class="section">
+                    <h2>Personal Info</h2>
+                    <div class="flex items-center gap-10">
+                        <div class="cover-img">AP</div>
+                        <button type="button" class="btn secondary">Change Photo</button>
+                    </div>
+                    <input class="input mt-10" name="name" value="Amanya Peter" placeholder="Full Name" />
+                    <input class="input mt-10" name="email" value="john@example.com" placeholder="Email" />
+                    <input class="input mt-10" name="phone" value="+256 123 456 789" placeholder="Phone" />
+                </div>
+                <div class="section mt-20">
+                    <h2>Academic Info</h2>
+                    <input class="input" name="university" value="Makerere University" placeholder="University" />
+                    <input class="input mt-10" name="major" value="Computer Science" placeholder="Major" />
+                    <select class="select mt-10" name="year"><option>Year 2</option></select>
+                </div>
+                <div class="section mt-20">
+                    <h2>Skills</h2>
+                    <div class="flex flex-wrap gap-8">
+                        <span class="pill blue">Web Dev</span> <!-- Add/remove via JS -->
+                    </div>
+                    <input class="input mt-10" placeholder="Add Skill" />
+                </div>
+                <div class="section mt-20">
+                    <h2>Availability & Payment</h2>
+                    <select class="select" name="availability"><option>Part-Time</option></select>
+                    <input class="input mt-10" name="payment" value="Bank ****1234" placeholder="Payment Info" />
+                </div>
+                <button type="submit" class="btn mt-20">Save Changes</button>
+            </form>
+
+            <div id="applications" class="section mt-40">
+                <h2>Applications History</h2>
+                <div class="filters flex gap-10">
+                    <select><option>Status: All</option></select>
+                    <select><option>Sort: Newest</option></select>
+                    <input placeholder="Search" />
+                </div>
+                <table class="table mt-10">
+                    <thead><tr><th>Gig</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                        <tr><td>Web Dev</td><td><span class="pill yellow">Pending</span></td><td>2024-09-15</td></tr>
+                        <!-- More rows -->
+                    </tbody>
+                </table>
+                <div class="text-right subtle mt-10">1 2 3 … 10 »</div>
+            </div>
+
+            <div class="section mt-20">
+                <h2>Completed Gigs</h2>
+                <table class="table">
+                    <thead><tr><th>Gig</th><th>Client</th><th>Earnings</th><th>Date</th></tr></thead>
+                    <tbody>
+                        <tr><td>Poster Design</td><td>Events Committee</td><td>sh.200,000</td><td>2025-06-12</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        // Load user data and update profile
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verify session and check user type
+            if (!Auth.requireUserType('student')) {
+                return;
+            }
+            
+            // Verify session is still valid
+            const user = await Auth.verifySession();
+            if (!user) {
+                return; // verifySession already handles logout/redirect
+            }
+            
+            if (user) {
+                // Update user name in sidebar
+                const userName = user.name;
+                const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Update sidebar
+                const sidebarTitle = document.querySelector('.sidebar .title');
+                if (sidebarTitle) {
+                    sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${userInitials}</div> ${userName}`;
+                }
+                
+                // Load profile data from API
+                loadProfileData();
+                
+                // Load applications and completed gigs
+                loadApplications();
+                loadCompletedGigs();
+            }
+        });
+        
+        function updateProfileForm(user) {
+            // Update form fields with user data
+            const nameField = document.querySelector('input[name="name"]');
+            const emailField = document.querySelector('input[name="email"]');
+            const phoneField = document.querySelector('input[name="phone"]');
+            const universityField = document.querySelector('input[name="university"]');
+            const majorField = document.querySelector('input[name="major"]');
+            
+            if (nameField) nameField.value = user.name || '';
+            if (emailField) emailField.value = user.email || '';
+            if (phoneField) phoneField.value = user.phone || '';
+            if (universityField) universityField.value = user.university || '';
+            if (majorField) majorField.value = user.major || '';
+            
+            // Update skills if available
+            if (user.skills) {
+                const skillsContainer = document.querySelector('.flex.flex-wrap.gap-8');
+                if (skillsContainer) {
+                    const skills = user.skills.split(',').map(s => s.trim());
+                    skillsContainer.innerHTML = skills.map(skill => 
+                        `<span class="pill blue">${escapeHtml(skill)}</span>`
+                    ).join('');
+                }
+            }
+            
+            // Update avatar initials
+            const avatar = document.querySelector('.cover-img');
+            if (avatar) {
+                avatar.textContent = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U';
+            }
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function loadApplications() {
+            try {
+                const response = await apiFetch('/applications');
+                if (response.success) {
+                    updateApplicationsTable(response.applications || []);
+                }
+            } catch (error) {
+                console.error('Failed to load applications:', error);
+                // Don't show error notification for empty results, just log it
+                if (!error.message || !error.message.includes('404')) {
+                    // Only show error for actual failures, not empty results
+                    console.log('Applications may be empty or endpoint not available');
+                }
+            }
+        }
+        
+        function updateApplicationsTable(applications) {
+            const tbody = document.querySelector('#applications tbody');
+            if (tbody) {
+                if (applications && applications.length > 0) {
+                    tbody.innerHTML = applications.map(app => `
+                        <tr>
+                            <td>${app.gig_title || 'N/A'}</td>
+                            <td><span class="pill ${getStatusClass(app.status)}">${app.status}</span></td>
+                            <td>${app.applied_at ? new Date(app.applied_at).toLocaleDateString() : 'N/A'}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    // Keep default sample data if no applications
+                    tbody.innerHTML = '<tr><td>Web Dev</td><td><span class="pill yellow">Pending</span></td><td>2024-09-15</td></tr>';
+                }
+            }
+        }
+        
+        async function loadCompletedGigs() {
+            try {
+                const response = await apiFetch('/applications?status=completed');
+                if (response.success) {
+                    updateCompletedGigsTable(response.applications || []);
+                }
+            } catch (error) {
+                console.error('Failed to load completed gigs:', error);
+                // Don't show error for empty results
+            }
+        }
+        
+        function updateCompletedGigsTable(completedGigs) {
+            const tbody = document.querySelector('.section:last-child tbody');
+            if (tbody) {
+                if (completedGigs && completedGigs.length > 0) {
+                    tbody.innerHTML = completedGigs.map(gig => `
+                        <tr>
+                            <td>${gig.gig_title || 'N/A'}</td>
+                            <td>${gig.business_name || 'N/A'}</td>
+                            <td>sh.${parseInt(gig.budget || 0).toLocaleString()}</td>
+                            <td>${gig.completed_at ? new Date(gig.completed_at).toLocaleDateString() : 'N/A'}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    // Keep default sample data if no completed gigs
+                    tbody.innerHTML = '<tr><td>Poster Design</td><td>Events Committee</td><td>sh.200,000</td><td>2025-06-12</td></tr>';
+                }
+            }
+        }
+        
+        function getStatusClass(status) {
+            switch(status) {
+                case 'accepted': return 'green';
+                case 'pending': return 'yellow';
+                case 'rejected': return 'red';
+                case 'completed': return 'blue';
+                default: return 'gray';
+            }
+        }
+        
+        // Load profile data from API
+        async function loadProfileData() {
+            try {
+                const response = await apiFetch('/profile');
+                if (response.success && response.user) {
+                    updateProfileForm(response.user);
+                } else {
+                    // Fallback to stored user data
+                    const user = Auth.getUser();
+                    updateProfileForm(user);
+                }
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+                // Use stored user data as fallback
+                const user = Auth.getUser();
+                updateProfileForm(user);
+            }
+        }
+        
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+                
+                const formData = {
+                    name: document.querySelector('input[name="name"]').value.trim(),
+                    email: document.querySelector('input[name="email"]').value.trim(),
+                    phone: document.querySelector('input[name="phone"]').value.trim(),
+                    university: document.querySelector('input[name="university"]').value.trim(),
+                    major: document.querySelector('input[name="major"]').value.trim()
+                };
+                
+                // Validate
+                if (!formData.name) {
+                    showNotification('Name is required', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    return;
+                }
+                
+                if (!formData.university) {
+                    showNotification('University is required', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    return;
+                }
+                
+                if (!formData.major) {
+                    showNotification('Major is required', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    return;
+                }
+                
+                const response = await apiFetch('/profile', {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.success) {
+                    showNotification('Profile updated successfully!', 'success');
+                    
+                    // Update stored user data
+                    const user = Auth.getUser();
+                    Object.assign(user, formData);
+                    Auth.setUser(user);
+                    
+                    // Update sidebar
+                    const sidebarTitle = document.querySelector('.sidebar .title');
+                    if (sidebarTitle) {
+                        const initials = formData.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                        sidebarTitle.innerHTML = `<div class="cover-img" style="width:36px;height:36px;">${initials}</div> ${formData.name}`;
+                    }
+                    
+                    // Update avatar
+                    const avatar = document.querySelector('.cover-img');
+                    if (avatar) {
+                        avatar.textContent = formData.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    }
+                } else {
+                    showNotification(response.error || 'Failed to update profile', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Profile update error:', error);
+                showNotification('Failed to update profile. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+</html>
